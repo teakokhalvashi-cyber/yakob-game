@@ -1,1 +1,239 @@
 
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ვინ არის იაკობ გოგებაშვილი?</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#fff1c9,#d9f4ff);
+ color:#26344a;text-align:center;padding:15px;
+}
+.container{
+ max-width:850px;margin:20px auto;background:white;
+ padding:22px;border-radius:25px;
+ box-shadow:0 5px 20px #7773;
+}
+h1{color:#e56b35;font-size:29px}
+h2{color:#2879a8}
+button{
+ border:0;border-radius:14px;padding:13px 19px;
+ margin:7px;background:#4b9bd1;color:white;
+ font-size:17px;cursor:pointer;
+}
+button:hover{transform:scale(1.04)}
+.grade{background:#f2a33a}
+.answer{display:block;width:90%;max-width:500px;margin:10px auto}
+#mascot{font-size:65px;animation:bounce 1.5s infinite}
+@keyframes bounce{50%{transform:translateY(-9px)}}
+.hidden{display:none}
+#message{font-size:18px;font-weight:bold;margin:15px}
+.book{
+ width:190px;height:220px;margin:15px auto;
+ border:7px solid #333;border-radius:8px;
+ display:flex;align-items:center;justify-content:center;
+ flex-direction:column;font-weight:bold;font-size:20px;
+}
+.color{width:40px;height:40px;border-radius:50%;padding:0}
+footer{margin-top:25px;padding:15px;background:#fff5d8;border-radius:15px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>📚 ვინ არის იაკობ გოგებაშვილი?</h1>
+<div id="mascot">🐻</div>
+<p id="welcome">გამარჯობა! მე შენი მეგობარი ვარ. მოდი, ერთად გავიცნოთ იაკობ გოგებაშვილი!</p>
+
+<div id="start">
+<h2>აირჩიე შენი კლასი</h2>
+<button class="grade" onclick="startGame(1)">I კლასი</button>
+<button class="grade" onclick="startGame(2)">II კლასი</button>
+<button class="grade" onclick="startGame(3)">III კლასი</button>
+<button class="grade" onclick="startGame(4)">IV კლასი</button>
+<button class="grade" onclick="startGame(5)">V კლასი</button>
+<button class="grade" onclick="startGame(6)">VI კლასი</button>
+</div>
+
+<div id="game" class="hidden">
+<h2 id="level"></h2>
+<div id="activity"></div>
+<div id="message"></div>
+<button onclick="home()">მთავარ გვერდზე დაბრუნება</button>
+</div>
+
+<footer>
+<b>თამაშის შემქმნელები</b><br>
+გიორგი ნინიძე VI კლასი<br>
+მარიამ ნინიძე IX კლასი<br>
+ანდრია მორთულაძე VI კლასი<br>
+უჩხითის საჯარო სკოლა
+</footer>
+</div>
+
+<script>
+let grade=1,number=0,score=0,timer,seconds=20;
+
+const questions={
+3:[
+["ვინ იყო იაკობ გოგებაშვილი?",["მასწავლებელი და მწერალი","მხატვარი","მეზღვაური"],0,"იაკობ გოგებაშვილი ქართველი მწერალი და პედაგოგი იყო."],
+["რომელი წიგნი დაწერა მან?",["დედა ენა","ვეფხისტყაოსანი","განდეგილი"],0,"იაკობ გოგებაშვილის ცნობილი წიგნია „დედა ენა“."],
+["სად დაიბადა იაკობ გოგებაშვილი?",["ვარიანში","ბათუმში","ქუთაისში"],0,"იაკობ გოგებაშვილი სოფელ ვარიანში დაიბადა."]
+],
+4:[
+["რომელ წელს დაიბადა იაკობ გოგებაშვილი?",["1840 წელს","1900 წელს","1801 წელს"],0,"იაკობ გოგებაშვილი დაიბადა 1840 წელს."],
+["რა საქმიანობას ეწეოდა იგი?",["პედაგოგობას","მხოლოდ ვაჭრობას","მხოლოდ სპორტს"],0,"ის იყო მასწავლებელი, მწერალი და საზოგადო მოღვაწე."],
+["რომელი ნაწარმოები ეკუთვნის მას?",["იავნანამ რა ჰქმნა?","ალუდა ქეთელაური","სტუმარ-მასპინძელი"],0,"„იავნანამ რა ჰქმნა?“ გოგებაშვილის ნაწარმოებია."]
+],
+5:[
+["რომელ წელს გამოიცა „დედა ენა“ პირველად?",["1876 წელს","1905 წელს","1850 წელს"],0,"„დედა ენა“ პირველად 1876 წელს გამოიცა."],
+["რა იყო გოგებაშვილის მთავარი მიზანი?",["ბავშვების განათლება","მხოლოდ მოგზაურობა","მხოლოდ ვაჭრობა"],0,"მას სურდა, ბავშვებს მშობლიურ ენაზე ესწავლათ."],
+["სად მდებარეობს სოფელი ვარიანი?",["გორის მუნიციპალიტეტში","აჭარაში","სვანეთში"],0,"ვარიანი გორის მუნიციპალიტეტში მდებარეობს."]
+],
+6:[
+["რა ეწოდება გოგებაშვილის ცნობილ სახელმძღვანელოს?",["დედა ენა","ბუნების კარი","ჩემი თავგადასავალი"],0,"მისი ცნობილი სახელმძღვანელოა „დედა ენა“."],
+["რომელი წლიდან უკავშირდება „დედა ენა“ ქართულ სასკოლო განათლებას?",["1876 წლიდან","1921 წლიდან","2000 წლიდან"],0,"პირველი გამოცემა 1876 წელს გამოვიდა."],
+["რატომ არის მნიშვნელოვანი იაკობ გოგებაშვილი?",["ქართული განათლების განვითარებისთვის","მხოლოდ სპორტისთვის","მხოლოდ არქიტექტურისთვის"],0,"მან დიდი წვლილი შეიტანა ქართული განათლების განვითარებაში."]
+]
+};
+
+function startGame(g){
+ grade=g;number=0;score=0;
+ document.getElementById("start").classList.add("hidden");
+ document.getElementById("game").classList.remove("hidden");
+ document.getElementById("level").innerText=g+" კლასის დავალებები";
+ document.getElementById("message").innerText="";
+ if(g===1)firstGrade();
+ else if(g===2)secondGrade();
+ else showQuestion();
+}
+
+function firstGrade(){
+ document.getElementById("activity").innerHTML=`
+ <h3>🌈 ისწავლე ასოები!</h3>
+ <p>აირჩიე ასო, რომლითაც იწყება სიტყვა „დედა“:</p>
+ <button onclick="checkSimple(this,'დ')">დ</button>
+ <button onclick="checkSimple(this,'ბ')">ბ</button>
+ <button onclick="checkSimple(this,'მ')">მ</button>
+ <p>შემდეგ სცადე ასოს გაფერადება!</p>
+ <div style="font-size:75px;color:#e56b35">დ</div>
+ <p>შემოხაზე ასო დ თითით ან ფანქრით!</p>
+ <button onclick="firstSecond()">შემდეგი დავალება</button>`;
+}
+function checkSimple(btn,a){
+ if(a==="დ"){
+ document.getElementById("message").innerText="ყოჩაღ! სწორია! სიტყვა დედა იწყება ასო დ-თი. 🎉";
+ score++;
+ }else document.getElementById("message").innerText="კიდევ სცადე! დედა იწყება ასო დ-თი.";
+}
+function firstSecond(){
+ document.getElementById("message").innerText="";
+ document.getElementById("activity").innerHTML=`
+ <h3>რომელი სიტყვაა სწორი?</h3>
+ <button class="answer" onclick="simpleAnswer(false)">გოგებაშვილლი</button>
+ <button class="answer" onclick="simpleAnswer(true)">გოგებაშვილი</button>
+ <button class="answer" onclick="simpleAnswer(false)">გოგებაშვილო</button>`;
+}
+function simpleAnswer(ok){
+ document.getElementById("message").innerText=ok?
+ "ყოჩაღ! სწორად დაწერე იაკობ გოგებაშვილი! 🌟":
+ "კიდევ სცადე! ყურადღებით დააკვირდი გვარს.";
+ if(ok)score++;
+}
+
+function secondGrade(){
+ document.getElementById("activity").innerHTML=`
+ <h3>📖 დაალაგე სიტყვები</h3>
+ <p>აირჩიე სიტყვები სწორი თანმიმდევრობით:</p>
+ <button onclick="wordChoice('იაკობ')">იაკობ</button>
+ <button onclick="wordChoice('გოგებაშვილი')">გოგებაშვილი</button>
+ <button onclick="wordChoice('მწერალია')">მწერალია</button>
+ <p id="words">შენი წინადადება: </p>
+ <button onclick="checkWords()">შემოწმება</button>
+ <hr>
+ <h3>🎨 გააფერადე წიგნის ყდა</h3>
+ <div class="book" id="book">დედა ენა<br>📚</div>
+ <p>აირჩიე ფერი:</p>
+ <button class="color" style="background:red" onclick="paint('red')"></button>
+ <button class="color" style="background:blue" onclick="paint('blue')"></button>
+ <button class="color" style="background:green" onclick="paint('green')"></button>
+ <button class="color" style="background:orange" onclick="paint('orange')"></button>`;
+}
+let chosen=[];
+function wordChoice(w){
+ if(!chosen.includes(w))chosen.push(w);
+ document.getElementById("words").innerText="შენი წინადადება: "+chosen.join(" ");
+}
+function checkWords(){
+ let ok=chosen.join(" ")==="იაკობ გოგებაშვილი მწერალია";
+ document.getElementById("message").innerText=ok?
+ "ყოჩაღ! წინადადება სწორად ააწყვე! 🎉":
+ "სცადე თავიდან: ჯერ იაკობ, შემდეგ გოგებაშვილი, ბოლოს მწერალია.";
+ if(ok)score++;
+}
+function paint(c){
+ document.getElementById("book").style.background=c;
+ document.getElementById("book").style.color="white";
+}
+
+function showQuestion(){
+ clearInterval(timer);
+ let list=questions[grade];
+ if(number>=list.length){finish();return;}
+ let q=list[number];
+ seconds=20;
+ document.getElementById("activity").innerHTML=`
+ <h3>⏳ დარჩენილი დრო: <span id="time">20</span> წამი</h3>
+ <h3>${number+1}. ${q[0]}</h3>
+ ${q[1].map((a,i)=>`<button class="answer" onclick="answer(${i})">${a}</button>`).join("")}`;
+ timer=setInterval(()=>{
+ seconds--;
+ let t=document.getElementById("time");
+ if(t)t.innerText=seconds;
+ if(seconds<=0){
+ clearInterval(timer);
+ document.getElementById("message").innerText="დრო ამოიწურა! "+q[3];
+ setTimeout(nextQuestion,2500);
+ }
+ },1000);
+}
+function answer(i){
+ clearInterval(timer);
+ let q=questions[grade][number];
+ if(i===q[2]){
+ score++;
+ document.getElementById("message").innerText="სწორია! 🌟 "+q[3];
+ }else{
+ document.getElementById("message").innerText="არასწორია. "+q[3];
+ }
+ document.querySelectorAll("#activity button").forEach(b=>b.disabled=true);
+ setTimeout(nextQuestion,2500);
+}
+function nextQuestion(){
+ number++;
+ document.getElementById("message").innerText="";
+ showQuestion();
+}
+function finish(){
+ clearInterval(timer);
+ document.getElementById("activity").innerHTML=
+ `<h2>🎉 გილოცავ! დავალებები დასრულებულია!</h2>
+ <p>შენი შედეგია: ${score}</p>
+ <div style="font-size:65px">🏆🌟🎈</div>
+ <p>შენ ბევრი რამ გაიგე იაკობ გოგებაშვილის შესახებ!</p>
+ <button onclick="home()">თავიდან თამაში</button>`;
+}
+function home(){
+ clearInterval(timer);
+ chosen=[];
+ document.getElementById("game").classList.add("hidden");
+ document.getElementById("start").classList.remove("hidden");
+ document.getElementById("message").innerText="";
+}
+</script>
+</body>
+</html>
+
